@@ -64,7 +64,7 @@ $.AdminLTE.options = {
   //Control Sidebar Options
   enableControlSidebar: true,
   controlSidebarOptions: {
-    //Which button should trigger the open/close event
+    //Which button should trigger the open/close tourEventList.ejs
     toggleBtnSelector: "[data-toggle='control-sidebar']",
     //The sidebar selector
     selector: ".control-sidebar",
@@ -441,7 +441,7 @@ function _init() {
       //The toggle button
       var btn = $(o.toggleBtnSelector);
 
-      //Listen to the click event
+      //Listen to the click tourEventList.ejs
       btn.on('click', function (e) {
         e.preventDefault();
         //If the sidebar is not open
@@ -530,13 +530,13 @@ function _init() {
     icons: $.AdminLTE.options.boxWidgetOptions.boxWidgetIcons,
     activate: function () {
       var _this = this;
-      //Listen for collapse event triggers
+      //Listen for collapse tourEventList.ejs triggers
       $(_this.selectors.collapse).on('click', function (e) {
         e.preventDefault();
         _this.collapse($(this));
       });
 
-      //Listen for remove event triggers
+      //Listen for remove tourEventList.ejs triggers
       $(_this.selectors.remove).on('click', function (e) {
         e.preventDefault();
         _this.remove($(this));

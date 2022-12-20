@@ -13,30 +13,31 @@ const querystring = require('querystring');
 const crypto = require('crypto'); //추가됐음
 const {getPagingData, getPagination} = require('../../controller/pagination');
 const {makePassword, comparePassword} = require('../../controller/passwordCheckUtil');
+const {fixed} = require("lodash/fp/_falseOptions");
 
 
 router.get('/', async (req, res, next) => {
 
     const currentProductPrice = {};
     const currentProductPrice2 = {};
-    const currentProduct ={};
-    const currentProduct2 ={};
+    const currentProduct = {};
+    const currentProduct2 = {};
 
     const popup1 = await models.popup.findOne({
         raw: true,
-        where : {
-            position : "R"
+        where: {
+            position: "R"
         }
     });
 
     const startDate = new Date(popup1.enddate) - new Date(popup1.startdate);
-    const endDate = Math.abs(startDate/(24*60*60*1000));
+    const endDate = Math.abs(startDate / (24 * 60 * 60 * 1000));
 
     // console.log("startdate->", startDate);
     // console.log("enddate->", endDate);
 
     const cookieConfig = {
-        expires: new Date(Date.now() + endDate*24*60*60),
+        expires: new Date(Date.now() + endDate * 24 * 60 * 60),
         path: '/',
         signed: true
     };
@@ -44,17 +45,17 @@ router.get('/', async (req, res, next) => {
 
     const popup2 = await models.popup.findOne({
         raw: true,
-        where : {
-            position : "L"
+        where: {
+            position: "L"
         }
     });
 
     const startDate2 = new Date(popup2.enddate) - new Date(popup2.startdate);
-    const endDate2 = Math.abs(startDate2/(24*60*60*1000));
+    const endDate2 = Math.abs(startDate2 / (24 * 60 * 60 * 1000));
 
     const cookieConfig2 = {
-        expires: new Date(Date.now() + endDate2*24*60*60),
-        path : '/',
+        expires: new Date(Date.now() + endDate2 * 24 * 60 * 60),
+        path: '/',
         signed: true,
     };
     res.cookie("popup2", popup2.pic, cookieConfig2)
@@ -62,31 +63,31 @@ router.get('/', async (req, res, next) => {
 
     const banner1 = await models.banner.findOne({
         raw: true,
-        where : {
-            position : "L"
+        where: {
+            position: "L"
         }
     });
     const banner2 = await models.banner.findOne({
         raw: true,
-        where : {
-            position : "R"
+        where: {
+            position: "R"
         }
     });
 
     let Auth = null;
-    let login ="";
+    let login = "";
 
     let msg = `세션이 존재하지 않습니다.`
     if (req.session.user) {
         msg = `${req.session.user.User}`;
-        Auth={username: req.session.user.User};
+        Auth = {username: req.session.user.User};
         login = req.session.user.login;
     }
 
     console.log("Auth->", Auth, msg);
 
     let Manager = {};
-    let { searchType, keyword, keyword2} = req.query;
+    let {searchType, keyword, keyword2} = req.query;
     let searchkeyword = keyword;
 
 
@@ -95,7 +96,7 @@ router.get('/', async (req, res, next) => {
         currentProductPrice2,
         currentProduct,
         currentProduct2,
-        popup1:popup1,
+        popup1: popup1,
         popup2,
         banner1,
         banner2,
@@ -107,7 +108,6 @@ router.get('/', async (req, res, next) => {
 
 });
 
-
 router.get('/tourlandRegister', function (req, res, next) {
 
     let autoNo = "";
@@ -116,39 +116,39 @@ router.get('/tourlandRegister', function (req, res, next) {
 
 
     let Auth = null;
-    let login ="";
+    let login = "";
 
     let msg = `세션이 존재하지 않습니다.`
     if (req.session.user) {
         msg = `${req.session.user.User}`;
-        Auth={username: req.session.user.User};
+        Auth = {username: req.session.user.User};
         login = req.session.user.login;
     }
 
     console.log("Auth->", Auth, msg);
 
     let Manager = {};
-    let { searchType, keyword, keyword2} = req.query;
+    let {searchType, keyword, keyword2} = req.query;
     let searchkeyword = keyword;
 
 
-    res.render("user/tourlandRegisterForm",  {autoNo, Auth,login, Manager, searchkeyword,userVO});
+    res.render("user/tourlandRegisterForm", {autoNo, Auth, login, Manager, searchkeyword, userVO});
 });
 
-router.post('/tourlandRegister', async (req,res,next)=> {
+router.post('/tourlandRegister', async (req, res, next) => {
     let query;
     console.log("register->", req.body);
 
     // Check if the email is already in use
     let userExists = await models.user.findOne({
         raw: true,
-        where : {
+        where: {
             userid: req.body.userid
         }
     });
 
     if (userExists) {
-        res.status(401).json({ message: "Email is already in use." });
+        res.status(401).json({message: "Email is already in use."});
         return;
     }
 
@@ -165,76 +165,78 @@ router.post('/tourlandRegister', async (req,res,next)=> {
             "registerSuccess": true,
             "id": user.userid
         });
-        res.redirect('/customer/loginForm/?'+query);
+        res.redirect('/customer/loginForm/?' + query);
     });
 
 });
 
-
-router.get('/idCheck/:userid', async (req,res,next)=> {
+router.get('/idCheck/:userid', async (req, res, next) => {
 
     const userid = req.params.userid;
 
-    try{
+    try {
         let checkUserid = await models.user.findOne({
             raw: true,
-            attributes : ['userid'],
-            where : {
-                userid : userid
+            attributes: ['userid'],
+            where: {
+                userid: userid
             }
         })
 
-        if( checkUserid != null)
-        {
+        if (checkUserid != null) {
             console.log("check->", checkUserid.userid);
-            if( checkUserid.userid != null) {
+            if (checkUserid.userid != null) {
                 res.status(200).send("exist");
             }
-        }
-        else{
+        } else {
             res.status(200).send("notexist");
         }
-    }
-    catch (e){
+    } catch (e) {
         console.error(e);
         next(e);
     }
 
 });
 
+router.get('/loginForm', async (req, res, next) => {
+    let {registerSuccess, id} = req.query;
 
-
-router.get('/loginForm', async (req,res,next)=> {
-    let { registerSuccess, id} = req.query;
-
-    let UserStay = {userid:id};
+    let UserStay = {userid: id};
 
     let EmpStay = {};
     let error = "";
-    let Auth ={};
-    let login ="";
+    let Auth = {};
+    let login = "";
     let Manager = {};
     let searchkeyword = "";
 
 
-    res.render("user/tourlandLoginForm", {Auth,login, Manager,searchkeyword, registerSuccess, UserStay, EmpStay, error});
+    res.render("user/tourlandLoginForm", {
+        Auth,
+        login,
+        Manager,
+        searchkeyword,
+        registerSuccess,
+        UserStay,
+        EmpStay,
+        error
+    });
 });
 
-
 const fecthData = async (req) => {
-    let { id, pass} = req.body;
+    let {id, pass} = req.body;
     let error = "";
 
-    if(id == null){
-        error= 'idempty';
+    if (id == null) {
+        error = 'idempty';
     }
-    if(pass == null){
-        error= 'passempty';
+    if (pass == null) {
+        error = 'passempty';
     }
 
     let userVO;
     try {
-        if( id !== null && pass !=null) {
+        if (id !== null && pass != null) {
             // ID,PASS가 입력된 경우
             userVO = await models.user.findOne({
                 raw: true,
@@ -245,7 +247,7 @@ const fecthData = async (req) => {
             })
         }
 
-    }catch (e){
+    } catch (e) {
         console.log(e);
     }
 
@@ -254,64 +256,71 @@ const fecthData = async (req) => {
 }
 
 
-router.post('/loginForm', (req,res,next)=> {
-    let { id, pass} = req.body;
+router.post('/loginForm', (req, res, next) => {
+    let {id, pass} = req.body;
 
-    let empVO ={};
+    let empVO = {};
     let session = {};
 
     let registerSuccess = {};
     let UserStay;
     let EmpStay = {};
     let error = "";
-    let Auth ={};
-    let login ="";
+    let Auth = {};
+    let login = "";
     let Manager = {};
     let searchkeyword = "";
     let loginSuccess = false;
 
-    fecthData(req).then((userVO)=>{
+    fecthData(req).then((userVO) => {
 
         // 직원 ID가 없는 경우
-        if(userVO.userid == null){
+        if (userVO.userid == null) {
             error = "idnoneexist";
-        }else{
+        } else {
 
             // 직원 ID가 있고 탈퇴한 회원
-            if(userVO.usersecess === 1){
+            if (userVO.usersecess === 1) {
                 error = "retiredcustomer";
-            }else if(userVO.usersecess === 0){
+            } else if (userVO.usersecess === 0) {
                 bcrypt.compare(req.body.pass, userVO.userpass, (err, result) => {
-                    console.log("comparePassword2222->",result);
+                    console.log("comparePassword2222->", result);
                     UserStay = userVO;
                     if (result) {
                         loginSuccess = true;
 
-                        if(req.session.user){
+                        if (req.session.user) {
                             console.log(`세션이 이미 존재합니다.`);
-                        }else{
+                        } else {
                             req.session.user = {
-                                "User" : userVO.username,
-                                "id" : id,
-                                "login" : "user",
-                                "Auth" : userVO.userpass,
-                                "pass" : pass,
-                                "mypage" : "mypageuser",
+                                "User": userVO.username,
+                                "id": id,
+                                "login": "user",
+                                "Auth": userVO.userpass,
+                                "pass": pass,
+                                "mypage": "mypageuser",
                             }
                             console.log(`세션 저장 완료! `);
                         }
                         res.redirect('/customer');
-                    }
-                    else{
-                        console.log("comparePassword4444->",result);
+                    } else {
+                        console.log("comparePassword4444->", result);
                         error = "passnotequal";
-                        res.render("user/tourlandLoginForm", {Auth,login, Manager,searchkeyword, registerSuccess, UserStay, EmpStay, error});
+                        res.render("user/tourlandLoginForm", {
+                            Auth,
+                            login,
+                            Manager,
+                            searchkeyword,
+                            registerSuccess,
+                            UserStay,
+                            EmpStay,
+                            error
+                        });
 
                     }
                 })
 
-            }
-            else{
+            } else {
                 error = "usernotfind";
             }
 
@@ -321,17 +330,215 @@ router.post('/loginForm', (req,res,next)=> {
 
 });
 
-
-router.get("/logout", (req, res, next)=>{
+router.get("/logout", (req, res, next) => {
 
     req.session.destroy();
     console.log(`session을 삭제하였습니다.`);
     res.redirect("/customer");
 })
 
+router.get("/tourlandBoardNotice", async (req, res, next) => {
+
+    const usersecess = req.params.usersecess;
+    let { searchType, keyword } = req.query;
+
+    const contentSize = Number(process.env.CONTENTSIZE); // 한페이지에 나올 개수
+    const currentPage = Number(req.query.currentPage) || 1; //현재페이
+    const { limit, offset } = getPagination(currentPage, contentSize);
+
+    keyword = keyword ? keyword : "";
 
 
+    let cri = {currentPage};
 
+    let noticeFixedList =
+        await  models.notice.findAll({
+            raw : true,
+            where : {
+                fixed : 1
+            },
+            limit, offset
+        });
+    console.log('====',noticeFixedList);
+
+    let noticeNoFixedList =
+        await models.notice.findAll({
+            raw : true,
+            where : {
+                fixed: 0
+            },
+            order : [
+                ["regdate", "DESC"]
+            ],
+            limit, offset
+            });
+
+    let noticeNoFixedCountList =
+        await models.notice.findAndCountAll({
+            raw : true,
+            where : {
+                fixed: 0
+            },
+            order : [
+                ["regdate", "DESC"]
+            ],
+            limit, offset
+        });
+
+    const pagingData = getPagingData(noticeNoFixedCountList, currentPage, limit);
+    console.log('---------', noticeNoFixedList);
+
+    // userHeader에 들어갈거
+    let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+
+    res.render("user/board/tourlandBoardNotice", {
+        noticeFixedList,
+        noticeNoFixedList,
+        cri,
+        Auth,
+        login,
+        Manager,
+        searchkeyword,
+        pagingData
+    });
+})
+
+router.get("/tourlandBoardNoticeDetail", async (req, res, next) => {
+
+    let notice =
+        await models.notice.findOne({
+            raw: true,
+            where: {
+                no : req.query.no
+            }
+        });
+    console.log(notice);
+    console.log(req.query);
+     // notice 테이블에 있는 자료중 1개만갖고오기
+
+
+    // userHeader에 들어갈거
+    let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+
+    res.render("user/board/tourlandBoardNoticeDetail", {notice, Auth, login, Manager, searchkeyword});
+});
+
+
+router.get('/tourlandBoardFAQ', async (req, res, next) => {
+
+    const usersecess = req.params.usersecess;
+    let { searchType, keyword } = req.query;
+
+    const contentSize = 8 // 한페이지에 나올 개수
+    const currentPage = Number(req.query.currentPage) || 1; //현재페이
+    const { limit, offset } = getPagination(currentPage, contentSize);
+
+    keyword = keyword ? keyword : "";
+
+    const list =
+        await  models.faq.findAll({
+            raw : true,
+            order: [
+                ["no", "DESC"]
+            ],
+            limit, offset
+        });
+    const listCount =
+        await models.faq.findAndCountAll({
+            raw : true,
+            order : [
+                ["no", "DESC"]
+            ],
+            limit, offset
+        });
+
+    console.log('======데이터 전체 count 수=======', listCount.count);
+    const pagingData = getPagingData(listCount, currentPage, limit);
+    console.log('--------한 페이지에 나오는 데이터-', listCount);
+
+    const cri = {};
+
+
+    // userHeader 에서 필요한 변수들
+    let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+
+
+    res.render('user/board/tourlandBoardFAQ', {list, cri, pagingData, Auth, login, Manager, searchkeyword});
+})
+
+
+router.get('/tourlandCustBoard', async (req, res, next) => {
+    // userHeader 에서 필요한 변수들
+    let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+
+    const contentSize = 5 // 한페이지에 나올 개수
+    const currentPage = Number(req.query.currentPage) || 1; //현재페이
+    const { limit, offset } = getPagination(currentPage, contentSize);
+
+    let cri = {};
+    const list =
+        await  models.custboard.findAll({
+            raw : true,
+            order: [
+                ["no", "DESC"]
+            ],
+            limit, offset
+        });
+    const listCount =
+        await models.custboard.findAndCountAll({
+            raw : true,
+            order : [
+                ["no", "DESC"]
+            ],
+            limit, offset
+        });
+    console.log('======데이터 전체 count 수=======', listCount.count);
+    const pagingData = getPagingData(listCount, currentPage, limit);
+    console.log('--------한 페이지에 나오는 데이터-', listCount);
+
+
+    res.render('user/board/tourlandCustBoard', {Auth, login, Manager, searchkeyword, cri, list, pagingData})
+})
+
+
+router.get("/tourlandEventList/ingEvent", async (req, res, next) => {
+
+    let eventList = await models.event.findAll({
+        raw : true,
+        where : { enddate : {[Op.gt] : new Date()}},
+    });
+
+
+    let mistyrose = {};
+
+    // userHeader 에서 필요한 변수들
+    let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+
+    res.render("user/event/tourEventList", {Auth, login, Manager, searchkeyword, eventList, mistyrose});
+});
+
+
+router.get("/tourEventList/eventDetailPage", (req, res, next) => {
+
+    const eventVO = {};
+
+    res.render('user/tourEventList.ejs/eventDetailPage', {eventVO});
+});
 
 module.exports = router;
 

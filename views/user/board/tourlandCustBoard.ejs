@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <link href="/stylesheets/paging.css" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/boardStyle.css" rel="stylesheet" type="text/css" />
+    <style>
+        section nav ul li:nth-child(3) {
+            background: mistyrose;
+        }
+
+        #btnWrite{
+            width: 100px;
+            padding:5px;
+            background:mistyrose;
+            border:none;
+            margin-left:40px;
+        }
+    </style>
+</head>
+
+<body>
+<%- include("../../include/userHeader.ejs")%>
+<section>
+    <%- include("../../include/userBoardMenu.ejs")%>
+    <div id="myreserv">
+        <h1>여행 후기</h1>
+        <div id="searchDiv">
+            <select name="searchType" id="searchType"  >
+                <option value="N" <%=cri.searchType ==null?'selected':''%>>----------</option>
+                <option value="custBoardContent" <%=cri.searchType =='custBoardContent'?'selected':''%>>내용</option>
+                <option value="custBoardWriter" <%=cri.searchType =='custBoardWriter'?'selected':''%>>글쓴이</option>
+                <option value="custBoardRegdate" <%=cri.searchType =='custBoardRegdate'?'selected':''%>>등록날짜</option>
+            </select>
+            <input type="text" name="keyword" id="keywordInput" placeholder="검색어를 입력해주세요">
+            <button id="btnSearch">검색</button>
+        </div>
+        <button id="btnWrite">글쓰기</button>
+        <table id="reserv" style="margin-top:15px;">
+            <tr>
+                <th class="nono">번호</th>
+                <th class="thTitle">제목</th>
+                <th>작성자</th>
+                <th class="lastTh">작성 일자</th>
+
+            </tr>
+
+            <% %>
+            <% list.forEach( custBoardList => { %>
+                <tr class="custBoardList" data-click="<%=custBoardList.no%>">
+                    <td class="nono"><%=custBoardList.no%></td>
+                    <td class="thTitle"><%=custBoardList.title%></td>
+                    <td><%=custBoardList.writer%></td>
+                    <td><%=custBoardList.regdate%></td>
+                </tr>
+            <% }) %>
+        </table>
+<!--        pageMaker 부분-->
+        <!--  부트 스트랩으로 사용  -->
+        <div class='text-center'>
+            <ul class="pagination">
+                <% if (pagingData.totalPages != 0) { %>
+                <div class="" style="text-align:center;">
+                    <ul class="pagination">
+                        <li <%if(pagingData.currentPage == 1){%> class="disabled" <%}else{%>class="waves-effect" <%}%> >
+                            <a <%if(pagingData.currentPage > 1){%> href="?currentPage=<%=pagingData.currentPage-1%>" <%}%>>
+                                <i class="material-icons">prev</i>
+                            </a>
+                        </li>
+                        <% for(var i=pagingData.pnStart; i<=pagingData.pnEnd; i++){ %>
+                        <li <%if(i===pagingData.currentPage){%> class="active"
+                                <%}%>>
+                            <a href="?currentPage=<%=i%>"><%=i%></a>
+                        </li>
+                        <% } %>
+
+                        <li <%if(pagingData.currentPage == pagingData.totalPages){%> class="disabled" <%}else{%> class="waves-effect" <%}%>>
+                            <a <%if(pagingData.currentPage < pagingData.totalPages){%> href="?currentPage=<%=pagingData.currentPage+1%>" <%}%> class="waves-effect">
+                                <i class="material-icons">next</i>
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+                <% } %>
+
+            </ul>
+        </div>
+    </div>
+
+</section>
+
+<%- include("../../include/userFooter.ejs")%>
+</body>
+</html>

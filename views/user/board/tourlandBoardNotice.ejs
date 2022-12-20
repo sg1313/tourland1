@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="/stylesheets/paging.css" rel="stylesheet" type="text/css" />
+<link href="/stylesheets/boardStyle.css" rel="stylesheet" type="text/css" />
+<style>
+  section nav ul li:first-child {
+	background: mistyrose;
+}
+.fixedTop { display:block;  height: 20px; background: maroon; color: #fff; }
+</style>
+</head>
+
+<body>
+	<%- include("../../include/userHeader.ejs")%>
+		<section>
+<!--			여기가 게시판 내용 들어가는곳임------------------ -->
+		<%- include("../../include/userBoardMenu.ejs")%>
+				<div id="myreserv">
+				<h1>공지사항</h1>
+				<div id="searchDiv">
+					 <select name="searchType" id="searchType">
+						<option value="n" <%=cri.searchType ==null?'selected':''%> >-----</option>
+						<option value="no" <%=cri.searchType =='no'?'selected':''%> >번호</option>
+						<option value="title" <%=cri.searchType =='title'?'selected':''%> >제목</option>
+					</select>
+					<input type="text" name="keyword" id="keywordInput" placeholder="검색어를 입력해주세요">
+					<button id="btnSearch">검색</button>
+				</div>
+					<table id="reserv">
+						<tr>
+							<th></th>
+							<th class="nono">번호</th>
+							<th class="thTitle">제목</th>
+							<th>작성자</th>
+							<th class="lastTh">작성일자</th>
+						</tr>
+						<% noticeFixedList.forEach( n => { %>
+							<tr>
+								<% if(n.fixed == "1") {%>
+								<td><span class="fixedTop">공지</span></td>
+								<% }else { %>
+										<td><span class="fixedTop">--</span></td>
+									<% } %>
+
+									<td class="nono"><%=n.no%></td>
+								<td class="thTitle"><a href="/customer/tourlandBoardNoticeDetail?no=<%=n.no%>&page=<%=cri.page%>" style="text-decoration: none;"><%=n.title%></a></td>
+								<td><%=n.writer%></td>
+								<td><%=n.regdate %></td>
+							</tr>
+						<% }) %>
+
+						<% noticeNoFixedList.forEach( n => { %>
+<!--						<c:forEach items="${noticeNoFixedList}" var="n">   -->
+							<tr>
+								<td></td>
+								<td class="nono"><%=n.no%></td>
+								<td class="thTitle"><a href="/customer/tourlandBoardNoticeDetail?no=<%=n.no%>&page=<%=cri.page%>" style="text-decoration: none;"><%=n.title%></a></td>
+								<td><%=n.writer%></td>
+								<td><%=n.regdate%></td>
+							</tr>
+
+						<% }) %>
+					</table>
+					<!--  부트 스트랩으로 사용  -->
+					<div class='text-center'>
+						<ul class="pagination">
+							<% if (pagingData.totalPages != 0) { %>
+							<div class="" style="text-align:center;">
+								<ul class="pagination">
+									<li <%if(pagingData.currentPage == 1){%> class="disabled" <%}else{%>class="waves-effect" <%}%> >
+										<a <%if(pagingData.currentPage > 1){%> href="?currentPage=<%=pagingData.currentPage-1%>" <%}%>>
+											<i class="material-icons">prev</i>
+										</a>
+									</li>
+									<% for(var i=pagingData.pnStart; i<=pagingData.pnEnd; i++){ %>
+									<li <%if(i===pagingData.currentPage){%> class="active"
+											<%}%>>
+										<a href="?currentPage=<%=i%>"><%=i%></a>
+									</li>
+									<% } %>
+
+									<li <%if(pagingData.currentPage == pagingData.totalPages){%> class="disabled" <%}else{%> class="waves-effect" <%}%>>
+										<a <%if(pagingData.currentPage < pagingData.totalPages){%> href="?currentPage=<%=pagingData.currentPage+1%>" <%}%> class="waves-effect">
+											<i class="material-icons">next</i>
+										</a>
+									</li>
+								</ul>
+
+							</div>
+							<% } %>
+
+						</ul>
+					</div>
+
+				</div>
+		</section>
+		<script>
+	$("#btnSearch").click(function(){
+		var searchType = $("#searchType").val();
+		var keyword = $("#keywordInput").val();
+		location.href = "tourlandBoardNotice?searchType="+searchType+"&keyword="+keyword;
+		//searchBoardController의 listPage GET 으로 받음
+
+	})
+
+
+</script>
+		<%- include("../../include/userFooter.ejs")%>
+</body>
+</html>

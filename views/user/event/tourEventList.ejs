@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	<link href="/stylesheets/eventList.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<%- include("../../include/userHeader.ejs") %>
+dfsdfsdf
+
+<!--이벤트 배너 -->
+<!--<div id="eventPageDiv">-->
+<!--	<img src="/resources/images/eventPage.jpg" style="width:100%; height:550px;">-->
+<!--	<p id="eventPageP">TOURLAND BIG EVENT</p>-->
+<!--</div>-->
+
+<section id="eventSection">
+	<p class="event3" id="inging">진행중 이벤트</p>
+<!--	<p class="event3" id="comecome">다가올 이벤트</p>-->
+	<p class="event3" id="donedone">종료된 이벤트</p>
+	<div id="eventMainDiv">
+		<% eventList.forEach( eventList => { %>
+		<!--				<c:forEach var="eventList" items="<%=eventList%>">-->
+		<div class="eventBox" data-click="<%=eventList.no%>">
+			<img src="customer/displayFile/event?filename=<%=eventList.pic%>" class="eventImgs">
+			<p><%=eventList.title%></p>
+		</div>
+		<% }) %>
+	</div>
+</section>
+<%- include("../../include/userFooter.ejs") %>
+</body>
+<script>
+	$(function(){
+
+		$('html, body').animate({ scrollTop : 700 }, 200); //이벤트 사진 전까지 이동 스르륵
+		//보내는 값에 따라 css변경
+		var eventSentence = "<%=mistyrose%>";
+		if(eventSentence == "inging"){
+			$("#inging").css("background","mistyrose");
+		}
+
+		if(eventSentence == "donedone"){
+			$("#donedone").css("background","mistyrose");
+		}
+
+		$(".pkgReservBtn").click(function(){
+			location.href="/customer/tourlandProductDetail";
+		})
+
+		//진행중 이벤트 = 새로고침 느낌
+		$(".event3").eq(0).click(function(){
+			location.href="/customer/tourlandEventList/ingEvent";
+		})
+
+		//지난 이벤트
+		$(".event3").eq(2).click(function(){
+			location.href="/customer/tourlandEventList/expiredEvent";
+		})
+
+		//각각의 이벤트를 클릭할 때 상세페이지로 이동
+		$(".eventBox").click(function(){
+			var no = $(this).attr("data-click");
+			location.href="/customer/eventDetailPage?no="+no;
+		})
+	})
+</script>
+
+</html>

@@ -32,7 +32,7 @@ router.get('/', async function (req, res, next) {
 router.get('/displayFile/:whichOne', async  (req, res, next) => {
     const choice = req.params.whichOne;
     const query = req.query.filename;
-    const base_dir = "/home/work/IdeaProjects/tourland/public/displayFile";
+    const base_dir = "/home/edu01/IdeaProjects/tourland_a/public/displayFile";
 
     let path;
     if( choice === "popup"){
@@ -42,7 +42,7 @@ router.get('/displayFile/:whichOne', async  (req, res, next) => {
         path = base_dir + "/banner" + query;
     }
     if ( choice === "event"){
-        path = base_dir + "/event" + query;
+        path = base_dir + "/tourEventList.ejs" + query;
     }
     if ( choice === "product" || (choice === "productSmall")){
         path = base_dir + "/product" + query;

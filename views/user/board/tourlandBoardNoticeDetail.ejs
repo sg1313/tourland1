@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="/stylesheets/boardStyle.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>   
+	<%- include("../../include/userHeader.ejs")%>
+		<section>
+		<%- include("../../include/userBoardMenu.ejs")%>
+		    <div id="detailDiv">
+				<div>
+				  <br>
+				  <p>투어랜드에서 알려드리는 공지사항입니다. </p>
+				</div>
+				<div id="detailContent">
+				   <ul id="datailUl">
+				   <li> <%=notice.no%> </li>
+				   <li class="detailLi"> <%=notice.title%> </li>
+				   <li> <%=notice.writer%> </li>
+				   <li> <%=notice.regdate%> </li>
+				   </ul>
+				   <div id="datailRealContent">
+				       <%=notice.content%>
+				   </div>
+				</div>
+				
+				
+		     </div>
+		     
+		</section>
+		<script>
+	$("#btnSearch").click(function(){
+		var searchType = $("#searchType").val();
+		var keyword = $("#keywordInput").val();
+		location.href = "tourlandBoardNotice?searchType="+searchType+"&keyword="+keyword;
+		//searchBoardController의 listPage GET 으로 받음 
+		
+	})
+</script>
+		<%- include("../../include/userFooter.ejs") %>
+</body>
+</html>
