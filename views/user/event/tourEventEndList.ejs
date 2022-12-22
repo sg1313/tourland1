@@ -16,8 +16,8 @@ dfsdfsdf
 <!--</div>-->
 
 <section id="eventSection">
-	<p class="event3" id="inging">진행중 이벤트</p>
-	<p class="event3" id="donedone" onclick="location.href='/customer/tourlandEventList/expiredEvent';" style="text-decoration:none">종료된 이벤트</p>
+	<p class="event3" id="inging" onclick="location.href='/customer/tourlandEventList/ingEvent';" style="text-decoration:none">진행중 이벤트</p>
+	<p class="event3" id="donedone">종료된 이벤트</p>
 	<div id="eventMainDiv">
 		<% eventList.forEach( eventList => { %>
 		<div class="eventBox" data-click="<%=eventList.id%>">

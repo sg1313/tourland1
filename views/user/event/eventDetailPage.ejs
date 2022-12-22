@@ -8,7 +8,8 @@
 <body>
 	<%- include("../../include/userHeader.ejs") %>
 	   <div id="eventPageDiv">
-			<img src="/resources/images/eventPage.jpg" style="width:100%; height:550px;">
+<!--		   이벤트 배너-->
+<!--			<img src="/images/eventPage.jpg" style="width:100%; height:550px;">-->
 			<p id="eventPageP">TOURLAND BIG EVENT</p>
 	   </div>
 	   
@@ -21,9 +22,9 @@
 			   <% if (eventVO !=null) { %>
 			      <h2 style="letter-spacing: 0.5em;"><i class="fas fa-bell"></i> <%=eventVO.title%> <i class="fas fa-bell"></i></h2><br><br><br>
 			      <h3 style="color:tomato;">이벤트 기간</h3>
-			      <h4 style="letter-spacing: 0.1em;"><fmt:formatDate value=' <%=eventVO.startdate%>' pattern="yyyy-MM-dd"/> ~  <fmt:formatDate value='<%=eventVO.enddate%>' pattern="yyyy-MM-dd"/></h4>
+			      <h4 style="letter-spacing: 0.1em;"><%=eventVO.startdate%>' ~ '<%=eventVO.enddate%>'</h4>
 			      <br><br>
-			     <%=eventVO.content%>
+			     <%-eventVO.content%>
 			   <% } %>
 			   <button class="toTop"> <i class="fas fa-chevron-up"></i>위로</button>
 		   </div>   

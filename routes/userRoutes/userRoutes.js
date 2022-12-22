@@ -515,11 +515,13 @@ router.get('/tourlandCustBoard', async (req, res, next) => {
 
 router.get("/tourlandEventList/ingEvent", async (req, res, next) => {
 
-    let eventList = await models.event.findAll({
-        raw : true,
-        where : { enddate : {[Op.gt] : new Date()}},
-    });
-
+        const eventList = await models.event.findAll({
+            raw : true,
+            where : {
+                enddate : {[Op.gt] : new Date()},
+            },
+        });
+        console.log('-------------123123123--', eventList);
 
     let mistyrose = {};
 
@@ -533,12 +535,53 @@ router.get("/tourlandEventList/ingEvent", async (req, res, next) => {
 });
 
 
-router.get("/tourEventList/eventDetailPage", (req, res, next) => {
+router.get("/tourlandEventList/expiredEvent", async (req, res, next) => {
 
-    const eventVO = {};
+    const eventList = await models.event.findAll({
+        raw : true,
+        where : {
+            enddate : {[Op.lt] : new Date()},
+        },
+    });
+    console.log('-----만료된이벤트목록--', eventList);
 
-    res.render('user/tourEventList.ejs/eventDetailPage', {eventVO});
+    let mistyrose = {};
+
+    // userHeader 에서 필요한 변수들
+    let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+
+    res.render("user/event/tourEventEndList", {Auth, login, Manager, searchkeyword, eventList, mistyrose});
 });
+
+
+// 이벤트 상세페이지
+router.get("/eventDetailPage", async(req, res, next) => {
+    console.log('---------', req.query);
+    let {no} = req.query;
+
+    const eventVO =
+        await models.event.findOne({
+            raw: true,
+            where: {
+                id : no
+            }
+        });
+    console.log(eventVO);
+
+    // userHeader 에서 필요한 변수들
+    let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+
+
+    res.render('user/event/eventDetailPage', {Auth, login, Manager, searchkeyword, eventVO, no});
+});
+
+
 
 module.exports = router;
 
