@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="/stylesheets/boardStyle.css" rel="stylesheet" type="text/css" />
+<style>
+  section nav ul li:nth-child(3) {
+	background: mistyrose;
+}
+ #datailRealContent{
+   height: 550px;
+ }
+ #btnReturnToList{
+    width:100px;
+    height:30px;
+    border:none;
+    background: mistyrose;
+    margin-bottom:10px; 
+   
+  }
+</style>
+</head>
+<body>
+	<%- include("../../include/userHeader.ejs")%>
+		<section>
+			<%- include("../../include/userBoardMenu.ejs")%>
+		    <div id="detailDiv">
+				<div>
+				  <br>
+				  <p>고객님들의 소중한 의견입니다. </p>
+				</div>
+				<div id="detailContent">
+				   <ul id="datailUl">
+				   <li> <%=custBoardVO.id%> </li>
+				   <li class="detailLi"> <%=custBoardVO.title%> </li>
+				   <li> <%=custBoardVO.writer%></li>
+				   <li> <%=custBoardVO.regdate%></li>
+				   </ul>
+				   <div id="datailRealContent">
+				       <%=custBoardVO.content%>
+				   </div>
+
+				</div>
+				<div class="box-footer">
+							 <button type="button" class="btn btn-primary" id="btnReturnToList">목록으로</button>
+					<!--게시글 본인이라면 수정&삭제 보임, 관리자라면 삭제만 보임 -->
+					<% if(mypage === 'mypageuser') { %>
+						<button type="button" class="btn btn-primary" onclick="btnUpdate()">수정하기</button>
+						<button type="button" class="btn btn-primary" id="btnDelete">삭제하기</button>
+					<% } else if(mypage === 'mypageemp') { %>
+						<button type="button" class="btn btn-primary" id="btnReturnToList">삭제하기</button>
+					<% } %>
+
+				</div>
+
+		     </div>
+		</section>
+<script>
+	$("#btnReturnToList").click(function(){
+		location.href = "tourlandCustBoard";
+	 })
+	function btnUpdate() {
+		location.href = 'tourlandCustBoardRegister?update=<%=custBoardVO.title%>&id=<%=custBoardVO.id%>&';
+	}
+
+	$("#btnDelete").click(function(){
+		location.href = "tourlandCustBoard";
+	})
+
+
+</script>
+	<%- include("../../include/userFooter.ejs")%>
+</body>
+</html>

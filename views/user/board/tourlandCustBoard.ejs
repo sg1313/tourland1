@@ -37,7 +37,7 @@
             <input type="text" name="keyword" id="keywordInput" placeholder="검색어를 입력해주세요">
             <button id="btnSearch">검색</button>
         </div>
-        <button id="btnWrite">글쓰기</button>
+        <button onclick="btnWrite()">글쓰기</button>
         <table id="reserv" style="margin-top:15px;">
             <tr>
                 <th class="nono">번호</th>
@@ -49,9 +49,9 @@
 
             <% %>
             <% list.forEach( custBoardList => { %>
-                <tr class="custBoardList" data-click="<%=custBoardList.no%>">
-                    <td class="nono"><%=custBoardList.no%></td>
-                    <td class="thTitle"><%=custBoardList.title%></td>
+                <tr class="custBoardList" data-click="<%=custBoardList.id%>">
+                    <td class="nono"><%=custBoardList.id%></td>
+                    <td class="thTitle"><a href="/customer/tourlandCustBoardDetail?id=<%=custBoardList.id%>&page=<%=cri.page%>" style="text-decoration: none;"><%=custBoardList.title%></a></td>
                     <td><%=custBoardList.writer%></td>
                     <td><%=custBoardList.regdate%></td>
                 </tr>
@@ -91,7 +91,17 @@
     </div>
 
 </section>
+<script>
 
+
+    // //글쓰기 버튼 누르면
+    // $("#btnWrite").click(function(){
+    //     location.href="tourlandCustBoardRegister";
+    // })
+    function btnWrite() {
+        location.href = 'tourlandCustBoardRegister';
+    }
+</script>
 <%- include("../../include/userFooter.ejs")%>
 </body>
 </html>

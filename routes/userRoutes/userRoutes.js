@@ -475,7 +475,7 @@ router.get('/tourlandBoardFAQ', async (req, res, next) => {
     res.render('user/board/tourlandBoardFAQ', {list, cri, pagingData, Auth, login, Manager, searchkeyword});
 })
 
-
+// 여행 후기 게시판 목록 보기
 router.get('/tourlandCustBoard', async (req, res, next) => {
     // userHeader 에서 필요한 변수들
     let Auth = {};
@@ -487,12 +487,11 @@ router.get('/tourlandCustBoard', async (req, res, next) => {
     const currentPage = Number(req.query.currentPage) || 1; //현재페이
     const { limit, offset } = getPagination(currentPage, contentSize);
 
-    let cri = {};
     const list =
         await  models.custboard.findAll({
             raw : true,
             order: [
-                ["no", "DESC"]
+                ["id", "DESC"]
             ],
             limit, offset
         });
@@ -500,19 +499,158 @@ router.get('/tourlandCustBoard', async (req, res, next) => {
         await models.custboard.findAndCountAll({
             raw : true,
             order : [
-                ["no", "DESC"]
+                ["id", "DESC"]
             ],
             limit, offset
         });
     console.log('======데이터 전체 count 수=======', listCount.count);
     const pagingData = getPagingData(listCount, currentPage, limit);
     console.log('--------한 페이지에 나오는 데이터-', listCount);
+    let cri = currentPage;
 
 
     res.render('user/board/tourlandCustBoard', {Auth, login, Manager, searchkeyword, cri, list, pagingData})
 })
 
+// 여행 후기 게시글 보기
+router.get('/tourlandCustBoardDetail', async (req, res, next) => {
+    console.log('=---쿼리추출---',req.query);
 
+    let custBoardVO =
+        await models.custboard.findOne({
+            raw: true,
+            where: {
+                id : req.query.id
+            }
+        });
+    console.log('----게시글보기====', custBoardVO);
+    // custBoardVO 테이블에 있는 자료중 1개만갖고오기
+    let mypage = "mypageuser";
+    console.log('------작성자(현재사용자)명????----->>>>', mypage);
+
+    // userHeader 에서 필요한 변수들
+    let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+
+    res.render('user/board/tourlandCustBoardDetail',{custBoardVO, Auth, login, Manager, searchkeyword, mypage});
+})
+
+// 여행 후기 등록 페이지 보기
+router.get('/tourlandCustBoardRegister', (req, res, next) => {
+
+    let custBoardVO = {};
+    let cri = {};
+
+    // userHeader 에서 필요한 변수들
+    let Auth = {username:"manager", empname:"테스트"};
+    // let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+    let mypage = "mypageuser";
+    // let mypage = "mypageemp";
+    console.log('------------------Auth누구------', Auth);
+
+    res.render('user/board/tourlandCustBoardRegister', {mypage, Auth, custBoardVO, login, Manager, searchkeyword, cri})
+})
+
+/// 게시글 등록하기
+router.post('/tourlandCustBoardRegister', async (req, res, next) => {
+// userHeader 에서 필요한 변수들
+    let Auth = {username:"manager", empname:"테스트"};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+    let mypage = "mypageuser";
+    console.log('--------------등록했따Auth누구------', Auth.username);
+
+    const custRegister = await models.custboard.create({
+        raw: true,
+        title : req.body.title,
+        content : req.body.content,
+        writer : req.body.username,
+        regdate : req.body.regdate,
+    });
+    console.log('------------req.body-----------------', req.body);
+    console.log('------------req.body.writer--------', req.body.writer);
+
+    console.log('-------작성자 누구custRegister.writer----------', custRegister.writer);
+    console.log('------------------게시글 등록-----------------', custRegister);
+
+// ------------------게시글 등록하면 후기 게시판 목록 보여줘야하므 list값도 같이 전송해서 게시글 목록 다시 불러오기 -----------------------------------
+    const contentSize = 5 // 한페이지에 나올 개수
+    const currentPage = Number(req.query.currentPage) || 1; //현재페이
+    const { limit, offset } = getPagination(currentPage, contentSize);
+
+    const list =
+        await  models.custboard.findAll({
+            raw : true,
+            order: [
+                ["id", "DESC"]
+            ],
+            limit, offset
+        });
+    const listCount =
+        await models.custboard.findAndCountAll({
+            raw : true,
+            order : [
+                ["id", "DESC"]
+            ],
+            limit, offset
+        });
+    console.log('======데이터 전체 count 수=======', listCount.count);
+    const pagingData = getPagingData(listCount, currentPage, limit);
+    console.log('--------한 페이지에 나오는 데이터-', listCount);
+    let cri = currentPage;
+
+
+    res.render('user/board/tourlandCustBoard', {custRegister, Auth, login, Manager, mypage, searchkeyword, list, pagingData, cri});
+});
+
+
+// 게시글 수정하기
+router.get('/tourlandCustBoardRegister?', async (req, res, next) => {
+
+    let custBoardVO = {};
+    let cri = {};
+
+    const update = await models.custboard.findOne( {
+        raw : true,
+        where : {
+            id : req.query.id,
+            title : req.body.title,
+            content : req.body.content,
+            writer : req.body.username,
+        }
+    })
+    console.log('----------수정----------', update);
+
+    // userHeader 에서 필요한 변수들
+    let Auth = {username: "manager", empname: "테스트"};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+    let mypage = "mypageuser";
+
+    console.log('------------------Auth누구------', Auth);
+
+    res.render('user/board/tourlandCustBoardRegister', {
+        mypage,
+        Auth,
+        custBoardVO,
+        login,
+        Manager,
+        searchkeyword,
+        cri,
+        update,
+    })
+
+});
+
+
+// 이벤트 목록 (현재 진행중인 이벤트들 나옴)
 router.get("/tourlandEventList/ingEvent", async (req, res, next) => {
 
         const eventList = await models.event.findAll({
