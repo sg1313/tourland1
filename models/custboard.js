@@ -19,7 +19,7 @@ module.exports = function(sequelize, DataTypes) {
       comment: "내용"
     },
     writer: {
-      type: DataTypes.STRING(5),
+      type: DataTypes.STRING(100),
       allowNull: true,
       comment: "작성자"
     },
@@ -33,6 +33,11 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(50),
       allowNull: true,
       comment: "비밀번호"
+    },
+    image : {
+      type: DataTypes.STRING(200),
+      allowNull: true,
+      comment: "이미지"
     }
   }, {
     sequelize,

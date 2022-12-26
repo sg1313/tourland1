@@ -30,7 +30,6 @@
 <body>
 	<%- include("../../include/userHeader.ejs")%>
 		<section>
-			<%- include("../../include/userBoardMenu.ejs")%>
 		    <div id="detailDiv">
 				<div>
 				  <br>
@@ -39,7 +38,7 @@
 				  <br><br>
 				</div>
 				<div id="detailContent">
-				   <form action="tourlandCustBoardRegister" method="post" id="custBoardForm">
+				   <form action="tourlandCustBoardRegister" method="post" id="custBoardForm" enctype="multipart/form-data">
 
 							  <p>
                                   <label>작성자</label>
@@ -65,7 +64,10 @@
 								<label>비밀번호 설정</label>
 								<input type="text" name="passwd" class="form-control" required="required">
 							  </p> -->
-							  <br><br>
+							  <br>
+					   <label>이미지 첨부하기</label><br>
+					   <input type="file" name="image"/>
+					   <br>
 							<div>
 								 <button type="submit" class="btn btn-primary" onclick="btnWrite()">등록</button>
 								 <button type="button" class="btn btn-primary" onclick="btnReturnToList()">목록으로</button>
@@ -85,7 +87,7 @@
 	}
 
 	function btnWrite() {
-		location.href = 'tourlandCustBoardRegister';
+		location.href = 'tourlandCustBoard';
 	}
 
 </script>

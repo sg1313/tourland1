@@ -10,6 +10,9 @@ const models = use('models');
 const fs = require('fs');
 const querystring = require('querystring');
 const crypto = require('crypto');
+const multer = require('multer');
+const path = require("path");
+
 
 
 require('dotenv').config({ path: '.env' });
@@ -59,5 +62,15 @@ router.get("/logout", (req, res, next)=>{
     console.log(`session을 삭제하였습니다.`);
     res.redirect("/customer");
 })
+
+
+// uploads 폴더 없을 때 서버 시작시 생성
+try {
+    fs.readdirSync('uploads');
+} catch (error) {
+    console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
+    fs.mkdirSync('uploads');
+}
+
 
 module.exports = router;

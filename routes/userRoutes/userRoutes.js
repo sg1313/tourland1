@@ -14,6 +14,9 @@ const crypto = require('crypto'); //추가됐음
 const {getPagingData, getPagination} = require('../../controller/pagination');
 const {makePassword, comparePassword} = require('../../controller/passwordCheckUtil');
 const {fixed} = require("lodash/fp/_falseOptions");
+const multer = require("multer");
+const path = require("path");
+
 
 
 router.get('/', async (req, res, next) => {
@@ -475,6 +478,96 @@ router.get('/tourlandBoardFAQ', async (req, res, next) => {
     res.render('user/board/tourlandBoardFAQ', {list, cri, pagingData, Auth, login, Manager, searchkeyword});
 })
 
+
+// 상품 문의 사항
+router.get('/tourlandPlanBoard', async (req, res, next) => {
+
+    const contentSize = 8 // 한페이지에 나올 개수
+    const currentPage = Number(req.query.currentPage) || 1; //현재페이
+    const { limit, offset } = getPagination(currentPage, contentSize);
+
+
+    const list =
+        await  models.planboard.findAll({
+            raw : true,
+            order: [
+                ["id", "DESC"]
+            ],
+            limit, offset
+        });
+    const listCount =
+        await models.planboard.findAndCountAll({
+            raw : true,
+            order : [
+                ["id", "DESC"]
+            ],
+            limit, offset
+        });
+
+    console.log('======데이터 전체 count 수=======', listCount.count);
+    const pagingData = getPagingData(listCount, currentPage, limit);
+    console.log('--------한 페이지에 나오는 데이터-', listCount);
+
+    const cri = {};
+    const mypage = {};
+    const pageMaker = {};
+
+
+    // userHeader 에서 필요한 변수들
+    let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+
+
+    res.render('user/board/tourlandPlanBoard', {list, cri, pagingData, Auth, login, Manager, searchkeyword, mypage, pageMaker});
+})
+
+
+// 상품 문의 사항 글 눌러서 보기
+router.get('/tourlandPlanBoardDetail', async (req, res, next) => {
+    console.log('=---쿼리추출---',req.query);
+
+    let plan =
+        await models.planboard.findOne({
+            raw: true,
+            where: {
+                id : req.query.id
+            }
+        });
+    console.log('----게시글보기====', plan);
+    let cri = {};
+
+    // userHeader 에서 필요한 변수들
+    let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+
+    res.render('user/board/tourlandPlanBoardDetail',{plan, Auth, login, Manager, searchkeyword, cri});
+})
+
+
+// 여행 후기 등록 페이지 보기
+router.get('/tourlandCustBoardRegister', (req, res, next) => {
+
+    let custBoardVO = {};
+    let cri = {};
+
+    // userHeader 에서 필요한 변수들
+    let Auth = {username:"manager", empname:"테스트"};
+    // let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+    let mypage = "mypageuser";
+    // let mypage = "mypageemp";
+    console.log('------------------Auth누구------', Auth);
+
+    res.render('user/board/tourlandCustBoardRegister', {mypage, Auth, custBoardVO, login, Manager, searchkeyword, cri})
+})
+
+//-----------------------------------------여행후기여행후기여행후기여행후기여행후기여행후기여행후기여행후기여행후기----------------------------------------------------------------
 // 여행 후기 게시판 목록 보기
 router.get('/tourlandCustBoard', async (req, res, next) => {
     // userHeader 에서 필요한 변수들
@@ -537,7 +630,8 @@ router.get('/tourlandCustBoardDetail', async (req, res, next) => {
     res.render('user/board/tourlandCustBoardDetail',{custBoardVO, Auth, login, Manager, searchkeyword, mypage});
 })
 
-// 여행 후기 등록 페이지 보기
+
+// 여행 후기 등록하는 페이지 보기
 router.get('/tourlandCustBoardRegister', (req, res, next) => {
 
     let custBoardVO = {};
@@ -545,19 +639,31 @@ router.get('/tourlandCustBoardRegister', (req, res, next) => {
 
     // userHeader 에서 필요한 변수들
     let Auth = {username:"manager", empname:"테스트"};
-    // let Auth = {};
     let login = "";
     let Manager = {};
     let searchkeyword = "";
     let mypage = "mypageuser";
-    // let mypage = "mypageemp";
     console.log('------------------Auth누구------', Auth);
 
     res.render('user/board/tourlandCustBoardRegister', {mypage, Auth, custBoardVO, login, Manager, searchkeyword, cri})
 })
 
-/// 게시글 등록하기
-router.post('/tourlandCustBoardRegister', async (req, res, next) => {
+
+/// 여행 후기 게시글 등록하기
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/')
+    },
+    filename: function (req, file, cb) {
+        const ext = path.extname(file.originalname);  // 파일 확장자
+        cb(null, path.basename(file.originalname, ext) + '-' + Date.now() + ext); // 새 파일명(기존 파일명 + 시간 + 확장자)
+    },
+    limits : { filesize : 30 * 1024 * 1024 }, // 30KB
+})
+
+const upload = multer({ storage: storage });
+
+router.post('/tourlandCustBoardRegister', upload.single("image"), async (req, res, next) => {
 // userHeader 에서 필요한 변수들
     let Auth = {username:"manager", empname:"테스트"};
     let login = "";
@@ -570,13 +676,12 @@ router.post('/tourlandCustBoardRegister', async (req, res, next) => {
         raw: true,
         title : req.body.title,
         content : req.body.content,
-        writer : req.body.username,
+        writer : req.body.writer,
         regdate : req.body.regdate,
+        image : req.file.path,
     });
-    console.log('------------req.body-----------------', req.body);
-    console.log('------------req.body.writer--------', req.body.writer);
 
-    console.log('-------작성자 누구custRegister.writer----------', custRegister.writer);
+    console.log('-------이미지 등록???----------', req.file);
     console.log('------------------게시글 등록-----------------', custRegister);
 
 // ------------------게시글 등록하면 후기 게시판 목록 보여줘야하므 list값도 같이 전송해서 게시글 목록 다시 불러오기 -----------------------------------
@@ -611,20 +716,22 @@ router.post('/tourlandCustBoardRegister', async (req, res, next) => {
 
 
 // 게시글 수정하기
-router.get('/tourlandCustBoardRegister?', async (req, res, next) => {
+router.get('/tourlandCustBoardRegister', async (req, res, next) => {
 
     let custBoardVO = {};
     let cri = {};
 
-    const update = await models.custboard.findOne( {
-        raw : true,
+    const update = await models.custboard.update({
+        content: req.body.content,
+        title: req.body.title,
+        image : req.body.image,
+    }, {
         where : {
             id : req.query.id,
-            title : req.body.title,
-            content : req.body.content,
             writer : req.body.username,
         }
-    })
+    });
+
     console.log('----------수정----------', update);
 
     // userHeader 에서 필요한 변수들
@@ -636,7 +743,7 @@ router.get('/tourlandCustBoardRegister?', async (req, res, next) => {
 
     console.log('------------------Auth누구------', Auth);
 
-    res.render('user/board/tourlandCustBoardRegister', {
+    res.render('user/board/tourlandCustBoard', {
         mypage,
         Auth,
         custBoardVO,
@@ -650,6 +757,51 @@ router.get('/tourlandCustBoardRegister?', async (req, res, next) => {
 });
 
 
+//게시글 삭제하기
+router.delete('/tourlandCustBoardDetail', async (req, res, next) => {
+
+    let custBoardVO = {};
+    let boardId = req.query.id
+
+    // const result = await models.custboard.destroy({
+    //     where : {
+    //         id : boardId,
+    //     }
+    // });
+    models.custboard.destroy({
+        where : {
+            id : boardId,
+        }
+    }).then( (result) => {
+        console.log(result);
+    }).catch( (err) => {
+        console.log(err);
+        next(err);
+    })
+
+    // console.log('=========삭제========', result);
+
+    // userHeader 에서 필요한 변수들
+    let Auth = {username: "manager", empname: "테스트"};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+    let mypage = "mypageuser";
+
+
+    res.render('user/board/tourlandCustBoard', {
+        mypage,
+        Auth,
+        custBoardVO,
+        login,
+        Manager,
+        searchkeyword,
+    })
+
+});
+
+
+//-----------------------------------이벤트이벤트이벤트이벤트이벤트이벤트이벤트이벤트이벤트이벤트----------------------------------------
 // 이벤트 목록 (현재 진행중인 이벤트들 나옴)
 router.get("/tourlandEventList/ingEvent", async (req, res, next) => {
 

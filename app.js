@@ -9,7 +9,6 @@ const { sequelize } = require('./models/index'); // 시퀄라이즈
 const session = require('express-session');
 const MemoryStore = require('memorystore')(session);
 
-
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/indexApi');
 const userRoutes = require('./routes/userRoutes/userRoutes');

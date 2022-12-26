@@ -2,7 +2,7 @@
 
 /* 본문 */
 	section div#myreserv { width:1000px; height: 100%; 
-							  margin-left: 200px;
+							  margin: 0 auto;
 							 }
 	section div#myreserv h1 { width: 200px;
 								 height: 30px;  

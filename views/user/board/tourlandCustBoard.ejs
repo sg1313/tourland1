@@ -24,19 +24,10 @@
 <body>
 <%- include("../../include/userHeader.ejs")%>
 <section>
-    <%- include("../../include/userBoardMenu.ejs")%>
     <div id="myreserv">
         <h1>여행 후기</h1>
-        <div id="searchDiv">
-            <select name="searchType" id="searchType"  >
-                <option value="N" <%=cri.searchType ==null?'selected':''%>>----------</option>
-                <option value="custBoardContent" <%=cri.searchType =='custBoardContent'?'selected':''%>>내용</option>
-                <option value="custBoardWriter" <%=cri.searchType =='custBoardWriter'?'selected':''%>>글쓴이</option>
-                <option value="custBoardRegdate" <%=cri.searchType =='custBoardRegdate'?'selected':''%>>등록날짜</option>
-            </select>
-            <input type="text" name="keyword" id="keywordInput" placeholder="검색어를 입력해주세요">
-            <button id="btnSearch">검색</button>
-        </div>
+        여행후기여행후기여행후기여행후기여행후기
+        <br>
         <button onclick="btnWrite()">글쓰기</button>
         <table id="reserv" style="margin-top:15px;">
             <tr>
