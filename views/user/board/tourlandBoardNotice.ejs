@@ -20,15 +20,7 @@
 		<%- include("../../include/userBoardMenu.ejs")%>
 				<div id="myreserv">
 				<h1>공지사항</h1>
-				<div id="searchDiv">
-					 <select name="searchType" id="searchType">
-						<option value="n" <%=cri.searchType ==null?'selected':''%> >-----</option>
-						<option value="no" <%=cri.searchType =='no'?'selected':''%> >번호</option>
-						<option value="title" <%=cri.searchType =='title'?'selected':''%> >제목</option>
-					</select>
-					<input type="text" name="keyword" id="keywordInput" placeholder="검색어를 입력해주세요">
-					<button id="btnSearch">검색</button>
-				</div>
+					<br>
 					<table id="reserv">
 						<tr>
 							<th></th>

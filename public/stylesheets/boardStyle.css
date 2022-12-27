@@ -95,3 +95,18 @@ table#reserv th.thTitle{
     margin-top: 30px;
 }
 
+section nav ul li:nth-child(4) {
+    background: mistyrose;
+}
+
+#custBoardForm p{
+    margin-bottom:10px;
+}
+#custBoardForm input{
+    height: 30px;
+}
+#custBoardForm label{
+    float:left;
+    width: 100px;
+}
+

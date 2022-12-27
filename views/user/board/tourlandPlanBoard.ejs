@@ -6,9 +6,6 @@
 <link href="/stylesheets/paging.css" rel="stylesheet" type="text/css" />
 <link href="/stylesheets/boardStyle.css" rel="stylesheet" type="text/css" />
 <style>
-  section nav ul li:nth-child(4) {
-	background: mistyrose;
-  }
 
   #btnWrite{
      width: 100px;
@@ -26,28 +23,12 @@
 			<%- include("../../include/userBoardMenu.ejs")%>
 
 				<div id="myreserv" >
-				<h1>상품 문의 사항</h1>
-				<div id="searchDiv">
-					<select name="searchType" id="searchType">
-						<option value="">전체</option>
-						<option value="D">국내패키지상품</option>
-						<option value="I">해외패키지상품</option>
-						<option value="R">상품 예약 및 결제</option>
-						<option value="U">회원혜택안내</option>
-					</select>
-					<select name="searchType2" id="searchType2" style="width:150px; height:30px;">
-						<option value="N">-----------</option>
-					</select>
-					<input type="text" name="keyword" id="keywordInput" placeholder="검색어를 입력해주세요">
-					<button id="btnSearch">검색</button>
-				</div>
+				<h1>상품 문의 사항</h1><br>
 				<button id="btnWrite">글쓰기</button>
 					<table id="reserv" style="margin-top:15px;">
 						<tr>
 							<th class="nono">번호</th>
 							<th style="width:400px;">제목</th>
-							<th>대분류</th>
-							<th>중분류</th>
 							<th>작성자</th>
 							<th>작성일자</th>
 							<th class="lastTh">답변상태</th>
@@ -57,8 +38,6 @@
 						<tr class="planBoardList" data-no="<%=planBoard.id%>">
 							<td class="nono"><%=planBoard.id%></td>
 							<td style="width:400px;"><a href="/customer/tourlandPlanBoardDetail?id=<%=planBoard.id%>&page=<%=cri.page%>" style="text-decoration: none;"><%=planBoard.title%></a></td>
-							<td><%=planBoard.lcate == 'D'?'국내패키지상품':planBoard.lcate == 'I'?'해외패키지상품':planBoard.lcate == 'R'?'상품 예약 및 결제':'회원혜택안내'%></td>
-							<td><%=planBoard.mcate == 'P'?'여행상품':planBoard.mcate == 'V'?'여권 및 비자':planBoard.mcate == 'T'?'환율':planBoard.mcate == 'J'?'제주여행':planBoard.mcate == 'B'?'예약 및 취소':planBoard.mcate == 'R'?'결제 및 환불':planBoard.mcate == 'C'?'쿠폰 및 이벤트':'기타'%></td>
 							<td><%=planBoard.writer%></td>
 							<td><%=planBoard.regdate%></td>
 								<% if (planBoard.answer==0) { %>

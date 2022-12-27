@@ -38,8 +38,8 @@
 				   <li> <%=custBoardVO.regdate%></li>
 				   </ul>
 				   <div id="datailRealContent">
-				       <%=custBoardVO.content%>
-					   <img src="<%=custBoardVO.image%>" alt="image" width="300" height="300"/>
+				       <%=custBoardVO.content%><br>
+					   <img src="/<%=custBoardVO.image%>" alt="image" width="300" height="300"/>
 				   </div>
 
 				</div>
@@ -61,8 +61,9 @@
 	$("#btnReturnToList").click(function(){
 		location.href = "tourlandCustBoard";
 	 })
+
 	function btnUpdate() {
-		location.href = 'tourlandCustBoardRegister?update=<%=custBoardVO.title%>&id=<%=custBoardVO.id%>';
+		location.href = 'tourlandCustBoardRegister/update&id=<%=custBoardVO.id%>';
 	}
 
 	$("#btnDelete").click(function(){
