@@ -14,9 +14,10 @@ const crypto = require('crypto'); //추가됐음
 const {getPagingData, getPagination} = require('../../controller/pagination');
 const {makePassword, comparePassword} = require('../../controller/passwordCheckUtil');
 const {fixed} = require("lodash/fp/_falseOptions");
-const multer = require("multer");
 const path = require("path");
-
+const bodyParser = require('body-parser');
+const parser = bodyParser.urlencoded({extended : false});
+const {upload} = require("../../controller/fileupload");
 
 
 router.get('/', async (req, res, next) => {
@@ -695,20 +696,6 @@ router.get('/tourlandCustBoardRegister', (req, res, next) => {
 })
 
 
-/// 여행 후기 게시글 등록하기
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/')
-    },
-    filename: function (req, file, cb) {
-            const ext = path.extname(file.originalname);  // 파일 확장자
-            cb(null, path.basename(file.originalname, ext) + '-' + Date.now() + ext); // 새 파일명(기존 파일명 + 시간 + 확장자)} else
-    },
-    limits : { filesize : 30 * 1024 * 1024 }, // 30KB
-})
-
-const upload = multer({ storage: storage });
-
 router.post('/tourlandCustBoardRegister', upload.single("image"), async (req, res, next) => {
 // userHeader 에서 필요한 변수들
     let Auth = {username:"manager", empname:"테스트"};
@@ -776,19 +763,19 @@ router.post('/tourlandCustBoardRegister', upload.single("image"), async (req, re
 
 
 // 게시글 수정하기 화면 보이기
-router.get('/tourlandCustBoardRegister/update', async (req, res, next) => {
+router.get('/tourlandCustBoardRegisterEdit', upload.single("image"), async (req, res, next) => {
 
     let custBoardVO = {};
     let cri = {};
 
-    const update = await models.custboard.findOne({
+    const toUpdate = await models.custboard.findOne({
+        raw : true,
         where : {
             id : req.query.id,
-            writer : req.body.username,
         }
     });
-
-    console.log('----------수정화면입장----------', update);
+    console.log('-----------쿼리정보-------', req.query);
+    console.log('----------수정화면입장----------', toUpdate);
 
     // userHeader 에서 필요한 변수들
     let Auth = {username: "manager", empname: "테스트"};
@@ -797,41 +784,24 @@ router.get('/tourlandCustBoardRegister/update', async (req, res, next) => {
     let searchkeyword = "";
     let mypage = "mypageuser";
 
-    console.log('------------------Auth누구------', Auth);
 
-    res.render('user/board/tourlandCustBoardRegister', {
-        mypage,
-        Auth,
-        custBoardVO,
-        login,
-        Manager,
-        searchkeyword,
-        cri,
-        update,
-    })
-
+        res.render('user/board/tourlandCustBoardRegisterEdit', {
+            mypage,
+            Auth,
+            custBoardVO,
+            login,
+            Manager,
+            searchkeyword,
+            cri,
+            toUpdate,
+        })
 });
 
 
 // 게시글 수정하기 전송
-router.post('/tourlandCustBoardRegister', async (req, res, next) => {
+router.post('/tourlandCustBoardRegisterEdit', parser,upload.single("image"),   async (req, res, next) => {
 
-    let custBoardVO = {};
-    let cri = {};
-
-    const update = await models.custboard.update({
-        content: req.body.content,
-        title: req.body.title,
-        image : req.body.image,
-    }, {
-        where : {
-            id : req.query.id,
-            writer : req.body.username,
-        }
-    });
-
-    console.log('----------수정----------', update);
-
+    console.log("444444444444->",req.body.id);
     // userHeader 에서 필요한 변수들
     let Auth = {username: "manager", empname: "테스트"};
     let login = "";
@@ -839,9 +809,42 @@ router.post('/tourlandCustBoardRegister', async (req, res, next) => {
     let searchkeyword = "";
     let mypage = "mypageuser";
 
-    console.log('------------------Auth누구------', Auth);
+    let cri = {};
+    let body = {};
+    if( req.file !=null){
+        body = {
+            raw : true,
+            content: req.body.content,
+            title: req.body.title,
+            image : req.file.fileName,
+        }
+    } else {
+        body = {
+            raw : true,
+            content: req.body.content,
+            title: req.body.title,
+        }
+    }
 
-    res.render('user/board/tourlandCustBoard', {
+    const update = await models.custboard.update(body, {
+        where : {
+            id : req.body.id,
+        }
+    });
+
+    console.log('-----------req.file---------', req.file);
+    // 수정하고 수정된 페이지 보여주기
+    const custBoardVO = await models.custboard.findOne({
+        raw: true,
+        where: {
+            id : req.body.id
+        }
+    });
+
+    console.log('----------수정----------', update);
+    console.log('--------custBoardVo-----', custBoardVO);
+
+    res.render('user/board/tourlandCustBoardDetail', {
         mypage,
         Auth,
         custBoardVO,
@@ -853,11 +856,6 @@ router.post('/tourlandCustBoardRegister', async (req, res, next) => {
     })
 
 });
-
-
-
-
-//게시글 삭제하기
 router.delete('/tourlandCustBoardDetail', async (req, res, next) => {
 
     let custBoardVO = {};

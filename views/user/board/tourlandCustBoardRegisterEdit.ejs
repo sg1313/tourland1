@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="/stylesheets/boardStyle.css" rel="stylesheet" type="text/css" />
+<style>
+  section nav ul li:nth-child(3) {
+	background: mistyrose;
+}
+
+  #boardRegister, #btnReturnToList{
+    width:100px;
+    height:30px;
+    border:none;
+    background: mistyrose;
+  }
+</style>
+</head>
+<body>
+	<%- include("../../include/userHeader.ejs")%>
+		<section>
+		    <div id="detailDiv">
+				<div>
+				  <br>
+				  <p>고객님들의 소중한 의견을 들려주세요.111 </p>
+				  <br>
+				  <br><br>
+				</div>
+				<div id="detailContent">
+				   <form action="tourlandCustBoardRegisterEdit" method="post" id="custBoardForm" enctype="multipart/form-data">
+
+							  <p>
+                                  <label>작성자</label>
+                                  <% if(mypage === 'mypageuser') { %>
+                                  <%=Auth.username%><br>
+								  <input type="text" name="id"  value="<%=toUpdate.id%>">
+                                  <input type="text" name="writer"  value="<%-Auth.username%>">
+                                  <% } %>
+
+                                  <% if(mypage === 'mypageemp') { %>
+                                  <%=Auth.empname%>
+                                  <input type="text" name="writer"  value="<%-Auth.empname%>">
+                                  <% } %>
+							  </p>
+							  <p>
+								<label>제목</label>
+								<input type="text" name="title" class="form-control" value="<%=toUpdate.title%>" required="required" style="border:none; border-bottom:1px solid black; width:400px;">
+						      </p>
+							  <p>
+								<label>내용</label>
+								<textarea rows="15" cols="100" style="margin-top:10px;" name="content" class="form-control" required="required"><%=toUpdate.content%></textarea>
+							  </p>
+						      <!-- <p>
+								<label>비밀번호 설정</label>
+								<input type="text" name="passwd" class="form-control" required="required">
+							  </p> -->
+							  <br>
+					   <label>이미지 첨부하기</label><br>
+					   <input type="file" name="image" value="<%=toUpdate.image%>"/>
+					   <br>
+							<div>
+								 <button type="submit" class="btn btn-primary">수정하기</button>
+								 <button type="button" class="btn btn-primary" onclick="btnReturnToList()">목록으로</button>
+							</div>
+				   </form>
+
+				</div>
+
+
+		     </div>
+
+		</section>
+		<script>
+
+	function btnReturnToList() {
+		location.href = 'tourlandCustBoard';
+	}
+
+	function btnWrite() {
+		location.href = 'tourlandCustBoardDetail?id=<%=custBoardVO.id%>';
+	}
+
+</script>
+	<%- include("../../include/userFooter.ejs")%>
+</body>
+</html>

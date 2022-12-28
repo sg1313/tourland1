@@ -39,7 +39,7 @@
 				   </ul>
 				   <div id="datailRealContent">
 				       <%=custBoardVO.content%><br>
-					   <img src="/<%=custBoardVO.image%>" alt="image" width="300" height="300"/>
+					   <img src="/<%=custBoardVO.image%>" alt="image"/>
 				   </div>
 
 				</div>
@@ -63,7 +63,7 @@
 	 })
 
 	function btnUpdate() {
-		location.href = 'tourlandCustBoardRegister/update&id=<%=custBoardVO.id%>';
+		location.href = 'tourlandCustBoardRegisterEdit?id=<%=custBoardVO.id%>';
 	}
 
 	$("#btnDelete").click(function(){
