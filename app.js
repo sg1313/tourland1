@@ -26,6 +26,15 @@ app.use(cookieParser("1234"));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'uploads')));
 
+const bodyParser = require('body-parser');
+const parser = bodyParser.urlencoded({extended : false});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+
 app.use(session({}));
 
 sequelize.sync({ force: false }) // 서버 실행시마다 테이블을 재생성할건지에 대한 여부

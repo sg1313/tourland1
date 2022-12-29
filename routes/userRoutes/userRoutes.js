@@ -563,7 +563,6 @@ router.get('/tourlandPlanBoardRegister', (req, res, next) => {
     res.render('user/board/tourlandPlanBoardRegister', {mypage, Auth, login, Manager, searchkeyword});
 })
 
-
 // 상품 문의 사항 등록하기
 router.post('/tourlandPlanBoardRegister', async (req, res, next) => {
 // userHeader 에서 필요한 변수들
@@ -579,6 +578,7 @@ router.post('/tourlandPlanBoardRegister', async (req, res, next) => {
         content : req.body.content,
         writer : req.body.writer,
         regdate : req.body.regdate,
+        answer : 0,
 
     });
     console.log('------------------게시글 등록-----------------', PlanRegister);
@@ -589,7 +589,7 @@ router.post('/tourlandPlanBoardRegister', async (req, res, next) => {
     const { limit, offset } = getPagination(currentPage, contentSize);
 
     const list =
-        await  models.custboard.findAll({
+        await  models.planboard.findAll({
             raw : true,
             order: [
                 ["id", "DESC"]
@@ -597,7 +597,7 @@ router.post('/tourlandPlanBoardRegister', async (req, res, next) => {
             limit, offset
         });
     const listCount =
-        await models.custboard.findAndCountAll({
+        await models.planboard.findAndCountAll({
             raw : true,
             order : [
                 ["id", "DESC"]
