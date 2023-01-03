@@ -7,7 +7,7 @@
 </head>
 <body>
 <%- include("../../include/userHeader.ejs") %>
-dfsdfsdf
+이벤트이벤트이벤트이벤트이벤트이벤트이벤트이벤트이벤트이벤트이벤트이벤트
 
 <!--이벤트 배너 -->
 <!--<div id="eventPageDiv">-->
@@ -21,7 +21,7 @@ dfsdfsdf
 	<div id="eventMainDiv">
 		<% eventList.forEach( eventList => { %>
 		<div class="eventBox" data-click="<%=eventList.id%>">
-			<img src="/displayFile/event<%-eventList.pic%>" class="eventImgs">
+			<img src="/displayFile/event/<%=eventList.pic%>" class="eventImgs">
 			<p><%=eventList.title%></p>
 		</div>
 		<% }) %>
@@ -33,7 +33,7 @@ dfsdfsdf
 <script>
 	$(function(){
 
-		$('html, body').animate({ scrollTop : 700 }, 200); //이벤트 사진 전까지 이동 스르륵
+		// $('html, body').animate({ scrollTop : 700 }, 200); //이벤트 사진 전까지 이동 스르륵
 		//보내는 값에 따라 css변경
 		var eventSentence = "<%=mistyrose%>";
 		if(eventSentence == "inging"){

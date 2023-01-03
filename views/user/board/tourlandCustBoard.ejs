@@ -24,7 +24,7 @@
 <body>
 <%- include("../../include/userHeader.ejs")%>
 <section>
-    <div id="myreserv">
+    <div id="review">
         <h1>여행 후기</h1>
         여행후기여행후기여행후기여행후기여행후기
         <br>
@@ -42,7 +42,7 @@
             <% list.forEach( custBoardList => { %>
                 <tr class="custBoardList" data-click="<%=custBoardList.id%>">
                     <td class="nono"><%=custBoardList.id%></td>
-                    <td class="thTitle"><a href="/customer/tourlandCustBoardDetail?id=<%=custBoardList.id%>&page=<%=cri.page%>" style="text-decoration: none;"><%=custBoardList.title%></a></td>
+                    <td class="thTitle"><a href="/customer/tourlandCustBoardDetail?id=<%=custBoardList.id%>&page=<%=cri%>" style="text-decoration: none;"><%=custBoardList.title%></a></td>
                     <td><%=custBoardList.writer%></td>
                     <td><%=custBoardList.regdate%></td>
                 </tr>

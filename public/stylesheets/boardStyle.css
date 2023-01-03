@@ -1,5 +1,10 @@
 @charset "UTF-8";
 
+/* 여행 후기 페이지 */
+section div#review { width:1000px; height: 100%;
+    margin: 0 auto;
+}
+
 /* 본문 */
 section div#myreserv { width:1000px; height: 100%;
     margin-left: 200px;

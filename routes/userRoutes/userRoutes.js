@@ -20,7 +20,7 @@ const parser = bodyParser.urlencoded({extended : false});
 const {upload} = require("../../controller/fileupload");
 
 
-router.get('/', async (req, res, next) => {
+router.get('/tourlandMain', async (req, res, next) => {
 
     const currentProductPrice = {};
     const currentProductPrice2 = {};
@@ -341,6 +341,7 @@ router.get("/logout", (req, res, next) => {
     res.redirect("/customer");
 })
 
+// 공지사항 전체 목록
 router.get("/tourlandBoardNotice", async (req, res, next) => {
 
     const usersecess = req.params.usersecess;
@@ -410,6 +411,7 @@ router.get("/tourlandBoardNotice", async (req, res, next) => {
     });
 })
 
+// 공지사항 게시글 읽기
 router.get("/tourlandBoardNoticeDetail", async (req, res, next) => {
 
     let notice =
@@ -433,7 +435,7 @@ router.get("/tourlandBoardNoticeDetail", async (req, res, next) => {
     res.render("user/board/tourlandBoardNoticeDetail", {notice, Auth, login, Manager, searchkeyword});
 });
 
-
+// FAQ 전체 목록
 router.get('/tourlandBoardFAQ', async (req, res, next) => {
 
     const usersecess = req.params.usersecess;
@@ -523,7 +525,6 @@ router.get('/tourlandPlanBoard', async (req, res, next) => {
 
     res.render('user/board/tourlandPlanBoard', {list, cri, pagingData, Auth, login, Manager, searchkeyword, mypage, pageMaker});
 })
-
 
 // 상품 문의 사항 글 눌러서 보기
 router.get('/tourlandPlanBoardDetail', async (req, res, next) => {
@@ -654,7 +655,13 @@ router.get('/tourlandCustBoard', async (req, res, next) => {
 
 // 여행 후기 게시글 보기
 router.get('/tourlandCustBoardDetail', async (req, res, next) => {
-    console.log('=---쿼리추출---',req.query);
+    // userHeader 에서 필요한 변수들
+    let Auth = {};
+    let login = "";
+    let Manager = {};
+    let searchkeyword = "";
+
+    console.log('=---쿼리에서 id 추출 ---',req.query.id);
 
     let custBoardVO =
         await models.custboard.findOne({
@@ -668,11 +675,7 @@ router.get('/tourlandCustBoardDetail', async (req, res, next) => {
     let mypage = "mypageuser";
     console.log('------작성자(현재사용자)명????----->>>>', mypage);
 
-    // userHeader 에서 필요한 변수들
-    let Auth = {};
-    let login = "";
-    let Manager = {};
-    let searchkeyword = "";
+
 
     res.render('user/board/tourlandCustBoardDetail',{custBoardVO, Auth, login, Manager, searchkeyword, mypage});
 })
@@ -695,7 +698,7 @@ router.get('/tourlandCustBoardRegister', (req, res, next) => {
     res.render('user/board/tourlandCustBoardRegister', {mypage, Auth, custBoardVO, login, Manager, searchkeyword, cri})
 })
 
-
+// 여행 후기 등록하기
 router.post('/tourlandCustBoardRegister', upload.single("image"), async (req, res, next) => {
 // userHeader 에서 필요한 변수들
     let Auth = {username:"manager", empname:"테스트"};
@@ -762,7 +765,7 @@ router.post('/tourlandCustBoardRegister', upload.single("image"), async (req, re
 });
 
 
-// 게시글 수정하기 화면 보이기
+// 여행후기 수정하기 화면 보이기
 router.get('/tourlandCustBoardRegisterEdit', upload.single("image"), async (req, res, next) => {
 
     let custBoardVO = {};
@@ -798,7 +801,7 @@ router.get('/tourlandCustBoardRegisterEdit', upload.single("image"), async (req,
 });
 
 
-// 게시글 수정하기 전송
+// 여행후기 수정하기 전송
 router.post('/tourlandCustBoardRegisterEdit', parser,upload.single("image"),   async (req, res, next) => {
 
     console.log("444444444444->",req.body.id);
@@ -809,7 +812,6 @@ router.post('/tourlandCustBoardRegisterEdit', parser,upload.single("image"),   a
     let searchkeyword = "";
     let mypage = "mypageuser";
 
-    let cri = {};
     let body = {};
     if( req.file !=null){
         body = {
@@ -834,28 +836,30 @@ router.post('/tourlandCustBoardRegisterEdit', parser,upload.single("image"),   a
 
     console.log('-----------req.file---------', req.file);
     // 수정하고 수정된 페이지 보여주기
-    const custBoardVO = await models.custboard.findOne({
-        raw: true,
-        where: {
-            id : req.body.id
-        }
-    });
+    // const custBoardVO = await models.custboard.findOne({
+    //     raw: true,
+    //     where: {
+    //         id : req.query.id
+    //     }
+    // });
 
     console.log('----------수정----------', update);
-    console.log('--------custBoardVo-----', custBoardVO);
+    // console.log('--------custBoardVo-----', custBoardVO);
 
-    res.render('user/board/tourlandCustBoardDetail', {
-        mypage,
-        Auth,
-        custBoardVO,
-        login,
-        Manager,
-        searchkeyword,
-        cri,
-        update,
-    })
+    res.redirect("/customer/tourlandCustBoard");
+    // res.render('user/board/tourlandCustBoardDetail', {
+    //     mypage,
+    //     Auth,
+    //     custBoardVO,
+    //     login,
+    //     Manager,
+    //     searchkeyword,
+    //     update,
+    // })
 
 });
+
+// 여행후기 삭제하기
 router.delete('/tourlandCustBoardDetail', async (req, res, next) => {
 
     let custBoardVO = {};
@@ -909,7 +913,7 @@ router.get("/tourlandEventList/ingEvent", async (req, res, next) => {
                 enddate : {[Op.gt] : new Date()},
             },
         });
-        console.log('-------------123123123--', eventList);
+        // console.log('-------------123123123--', eventList); 이거 주석처리 해하제면 콘솔에 이미지 주소 길게 나옴
 
     let mistyrose = {};
 
@@ -922,7 +926,7 @@ router.get("/tourlandEventList/ingEvent", async (req, res, next) => {
     res.render("user/event/tourEventList", {Auth, login, Manager, searchkeyword, eventList, mistyrose});
 });
 
-
+// 만료된 이벤트 목록
 router.get("/tourlandEventList/expiredEvent", async (req, res, next) => {
 
     const eventList = await models.event.findAll({
@@ -943,7 +947,6 @@ router.get("/tourlandEventList/expiredEvent", async (req, res, next) => {
 
     res.render("user/event/tourEventEndList", {Auth, login, Manager, searchkeyword, eventList, mistyrose});
 });
-
 
 // 이벤트 상세페이지
 router.get("/eventDetailPage", async(req, res, next) => {

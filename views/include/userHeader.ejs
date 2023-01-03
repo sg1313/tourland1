@@ -200,17 +200,6 @@
             <span>패키지 전문 여행사 <i class="fas fa-plane-departure"></i></span>
             <h1><a href="/customer/tourlandMain">투어 랜드</a></h1>
         </div>
-        <div id="search" class="ls">
-            <% if (searchkeyword != null) { %>
-            <input type="text" placeholder="검색어를 입력하세요." id="mainSearchKeyword" value="<%= searchkeyword %>">
-            <i class="fas fa-search" style="font-size:25px; margin-left:10px;" id="mainSearchIcon"></i>
-            <% } else { %>
-                <input type="text" placeholder="검색어를 입력하세요." id="mainSearchKeyword">
-                <i class="fas fa-search" style="font-size:25px; margin-left:10px;" id="mainSearchIcon"></i>
-
-            <% } %>
-            <!-- <button>찾기</button> -->
-        </div>
     </div>
 
     <div id="nav2">
@@ -224,16 +213,16 @@
     </div>
 </header>
 
-<script>
-    $(function () {
-        $("#mainSearchIcon").click(function () {
-            var mainKeyword = $("#mainSearchKeyword").val();
+<!--<script>-->
+<!--    $(function () {-->
+<!--        $("#mainSearchIcon").click(function () {-->
+<!--            var mainKeyword = $("#mainSearchKeyword").val();-->
 
-            if (mainKeyword == "") {
-                alert("검색어를 입력해주세요");
-                return false;
-            }
-            location.href = "/customer/tourlandSearch/default?searchType=&keyword=" + mainKeyword + "&keyword2=";
-        })
-    })
-</script>
+<!--            if (mainKeyword == "") {-->
+<!--                alert("검색어를 입력해주세요");-->
+<!--                return false;-->
+<!--            }-->
+<!--            location.href = "/customer/tourlandSearch/default?searchType=&keyword=" + mainKeyword + "&keyword2=";-->
+<!--        })-->
+<!--    })-->
+<!--</script>-->
